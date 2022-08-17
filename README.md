@@ -9,17 +9,17 @@ explica e adapta para Ruby 14 dos 23 padrões de design da Gangue dos Quatro
 ### Padrões dos GoF
 
 * [Adapter](Adapter/README.md): ajuda duas interfaces incompatíveis a trabalharem em conjunto
-* [Builder](builder/README.md): cria objetos complexos que são difíceis de serem configurados
-* [Command](command/README.md): executa uma tarefa específica sem ter informação alguma sobre o receptor da requisição
-* [Composite](composite/README.md): constrói  uma hierarquia de objetos árvore e interage com todos eles da mesma forma
-* [Decorator](decorator/README.md): modifica as responsabilidades de um objeto adicionando algumas funcionalidades
-* [Factory](factory/README.md): cria objetos sem ter que especificar a classe exata do objeto que será criado
-* [Interpreter](interpreter/README.md): fornece uma linguagem especializada para resolver um problema bem definido em um domínio conhecido
-* [Iterator](iterator/README.md): fornece um jeito de acessar uma coleção de sub-objetos sem expor a representação por baixo
-* [Observer](observer/README.md): ajuda na construção de uma sistema altamente integrado, sustentável e evita acoplamento entre classes
-* [Proxy](proxy/README.md): permite que tenhamos mais controle sobre como e quando nós acessamos um determinado objeto
-* [Singleton](singleton/README.md): tenha uma única instância de uma certa classe em toda sua aplicação
-* [Strategy](strategy/README.md): modifica parte de um algoritmo em tempo de execução
+* [Builder](Builder/README.md): cria objetos complexos que são difíceis de serem configurados
+* [Command](Command/README.md): executa uma tarefa específica sem ter informação alguma sobre o receptor da requisição
+* [Composite](Composite/README.md): constrói  uma hierarquia de objetos árvore e interage com todos eles da mesma forma
+* [Decorator](Decorator/README.md): modifica as responsabilidades de um objeto adicionando algumas funcionalidades
+* [Factory](Factory/README.md): cria objetos sem ter que especificar a classe exata do objeto que será criado
+* [Interpreter](Interpreter/README.md): fornece uma linguagem especializada para resolver um problema bem definido em um domínio conhecido
+* [Iterator](Iterator/README.md): fornece um jeito de acessar uma coleção de sub-objetos sem expor a representação por baixo
+* [Observer](Observer/README.md): ajuda na construção de uma sistema altamente integrado, sustentável e evita acoplamento entre classes
+* [Proxy](Proxy/README.md): permite que tenhamos mais controle sobre como e quando nós acessamos um determinado objeto
+* [Singleton](Singleton/README.md): tenha uma única instância de uma certa classe em toda sua aplicação
+* [Strategy](Strategy/README.md): modifica parte de um algoritmo em tempo de execução
 * [Template Method](TemplateMethod/README.md): redefine certos passos de um algoritmo sem mudar a estrutura do algoritmo
 
 ### Padrões que não são dos GoF: Padrões para Ruby
