@@ -4,7 +4,7 @@
 Nós precisamos criar objetos sem ter que especificar exatamente a classe do objeto que será criado.
 
 ## Solução
-O Padrão *Factory* é uma especialização do padrão [Template](template.md). Nós começamos criando
+O Padrão *Factory* é uma especialização do padrão [Template](../TemplateMethod/README.md). Nós começamos criando
 uma classe base genérica onde nós não fazemos a decisão "qual classe". Ao invés, sempre que ela precisar
 criar um objeto, ela chama um método que é definido na subclasse. Então, dependendo da subclasse que
 usarmos (*factory*), nós criamos objetos de uma classe ou outra (**produtos**).
