@@ -1,3 +1,7 @@
+# um vídeo legal com exemplo xe objeto de valor
+- https://youtu.be/7ItqiuM_LXU
+
+
 # Values
 
 [![Gem Version](https://img.shields.io/gem/v/values.svg)](https://rubygems.org/gems/values/)
