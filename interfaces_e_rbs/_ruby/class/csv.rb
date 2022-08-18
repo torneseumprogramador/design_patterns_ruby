@@ -1,4 +1,8 @@
 class CSV
+  def initialize
+    raise "ilegal"
+  end
+
   def to_csv
     raise "Not implemented"
   end
