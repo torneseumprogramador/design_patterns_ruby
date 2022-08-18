@@ -1,3 +1,0 @@
-- vídeo legal
-- https://youtu.be/C6vCOh0rKVI
-- Autor Rodrigo Serradura
