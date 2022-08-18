@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+gem 'rbs'
+gem "dotenv"
+gem 'activesupport', '~> 6'
+gem "steep"
+
+gem "sinatra"
+gem "sinatra-activerecord"

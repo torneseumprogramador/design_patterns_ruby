@@ -1,0 +1,1 @@
+typeprof lib/book.rb > sig/book.rbs

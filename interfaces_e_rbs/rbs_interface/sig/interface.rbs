@@ -1,0 +1,12 @@
+interface _IntegerConvertible
+  def to_int: () -> Integer
+  # def to_int: () -> String # erro
+end
+
+class Super
+  attr_reader val : _IntegerConvertible
+ 
+  def initialize : (val: _IntegerConvertible) -> void
+                 
+  def print_val : () -> void
+end

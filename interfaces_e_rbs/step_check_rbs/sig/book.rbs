@@ -1,0 +1,9 @@
+# TypeProf 0.21.2
+
+# Classes
+class Book
+  @pages: Integer
+
+  def initialize: (Integer pages) -> void
+  def pages: -> Integer
+end
