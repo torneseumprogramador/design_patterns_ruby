@@ -37,9 +37,14 @@ class Report
         puts(line)
       end
     end
-    
+
   end
 end
+
+
+Report.new("html").output_report
+Report.new("txt").output_report
+Report.new("xml").output_report # problema
 ```
 
 
