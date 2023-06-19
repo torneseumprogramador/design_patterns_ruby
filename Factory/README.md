@@ -15,11 +15,16 @@ class Cliente
     @email = email
   end
 
-  def exibir_informacoes
+  def exibir_informacoes(canetas=[])
     puts "Nome: #{nome}"
     puts "Email: #{email}"
+    puts "Canetas: #{canetas}" if canetas
   end
 end
+
+cliente = Cliente.new("Danilo", "danilo@teste.com")
+canetas = [Caneta.new(cliente, "azul"), Caneta.new(cliente, "vermelha")]
+canetas.exibir_informacoes(canetas)
 ```
 
 ### Factory - ClienteFactory
@@ -28,10 +33,14 @@ A Factory, chamada `ClienteFactory`, é responsável por criar instâncias da cl
 
 ```ruby
 class ClienteFactory
-  def self.criar_cliente(nome, email)
-    Cliente.new(nome, email)
+  def criar_cliente_com_nome_e_email_e_suas_canetas(nome, email)
+    cliente = Cliente.new(nome, email)
+    canetas = [Caneta.new(cliente, "azul"), Caneta.new(cliente, "vermelha")]
+    cliente.exibir_informacoes(canetas)
   end
 end
+
+ClienteFactory.criar_cliente_com_nome_e_email_e_suas_canetas("Danilo", "danilo@teste.com").exibir_informacoes
 ```
 
 ### Exemplo de uso
