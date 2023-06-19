@@ -1,64 +1,49 @@
-# O Padrão *Factory* (Fábrica)
+## Factory em Ruby - Exemplo de Cliente
 
-## Problema
-Nós precisamos criar objetos sem ter que especificar exatamente a classe do objeto que será criado.
+Neste exemplo, vamos explorar o conceito de Factory em Ruby, utilizando a classe `Cliente` como exemplo.
 
-## Solução
-O Padrão *Factory* é uma especialização do padrão [Template](../TemplateMethod/README.md). Nós começamos criando
-uma classe base genérica onde nós não fazemos a decisão "qual classe". Ao invés, sempre que ela precisar
-criar um objeto, ela chama um método que é definido na subclasse. Então, dependendo da subclasse que
-usarmos (*factory*), nós criamos objetos de uma classe ou outra (**produtos**).
+### Classe Cliente
 
-## Exemplo
-Imagine que te pediram para construir um simulador de vida em uma lagoa que tem vários patos:
+A classe `Cliente` representa um cliente com propriedades como nome e email. Ela possui um construtor para inicializar essas propriedades e um método `exibir_informacoes` para mostrar os detalhes do cliente.
 
 ```ruby
-class Pond
-  def initialize(number_ducks)
-    @ducks = number_ducks.times.inject([]) do |ducks, i|
-      ducks << Duck.new("Duck#{i}")
-      ducks
-    end
+class Cliente
+  attr_accessor :nome, :email
+
+  def initialize(nome, email)
+    @nome = nome
+    @email = email
   end
 
-  def simulate_one_day
-    @ducks.each {|duck| duck.speak}
-    @ducks.each {|duck| duck.eat}
-    @ducks.each {|duck| duck.sleep}
+  def exibir_informacoes
+    puts "Nome: #{nome}"
+    puts "Email: #{email}"
   end
 end
-
-pond = Pond.new(3)
-pond.simulate_one_day
 ```
 
-Mas como nós iriamos modelar nossa classe `Pond` (Lagoa) se nós quisermos ter sapos ao invés de patos?
-Na implementação acima, nós estamos especificando no inicializador da classe que ela deveria ser
-preenchida com patos. Por isso, nós iremos refatora-lo para que a decisão de criar um tipo de animal
-ou outro seja realizada em uma subclasse.
+### Factory - ClienteFactory
+
+A Factory, chamada `ClienteFactory`, é responsável por criar instâncias da classe `Cliente`. Ela possui um método estático `criar_cliente` que recebe o nome e o email do cliente e retorna uma nova instância da classe `Cliente`.
 
 ```ruby
-class Pond
-  def initialize(number_animals)
-    @animals = number_animals.times.inject([]) do |animals, i|
-      animals << new_animal("Animal#{i}")
-      animals
-    end
-  end
-
-  def simulate_one_day
-    @animals.each {|animal| animal.speak}
-    @animals.each {|animal| animal.eat}
-    @animals.each {|animal| animal.sleep}
+class ClienteFactory
+  def self.criar_cliente(nome, email)
+    Cliente.new(nome, email)
   end
 end
-
-class FrogPond < Pond
-  def new_animal(name)
-    Frog.new(name)
-  end
-end
-
-pond = FrogPond.new(3)
-pond.simulate_one_day
 ```
+
+### Exemplo de uso
+
+Vamos utilizar a `ClienteFactory` para criar um novo cliente chamado "João" com o email "joao@example.com" e exibir suas informações.
+
+```ruby
+cliente = ClienteFactory.criar_cliente("João", "joao@example.com")
+cliente.exibir_informacoes
+```
+
+Neste exemplo, a `ClienteFactory` encapsula a lógica de criação de objetos da classe `Cliente`, permitindo criar instâncias de forma mais flexível e isolada. Ao utilizar a Factory, podemos criar clientes de maneira mais simplificada, sem a necessidade de conhecer os detalhes internos da classe `Cliente`.
+
+Através do uso do método `criar_cliente` da `ClienteFactory`, podemos criar novos objetos da classe `Cliente` sem a necessidade de chamar diretamente o construtor da classe, tornando o código mais legível e de fácil manutenção.
+

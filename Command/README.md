@@ -1,118 +1,84 @@
-# O Padrão *Command*
+## Exemplo do Padrão Command em Ruby
 
-## Problema
-Nós queremos realizar alguma tarefa específica sem saber como todo o processo
-funciona ou ter qualquer informação sobre o destinatário da requisição.
-
-## Solução
-O Padrão *Command* (Comando) desacopla o objeto que precisa realizar uma tarefa
-específica daquele que sabe como fazer. Ele encapsula toda a informação necessária
-para fazer o trabalho em seu próprio objeto incluindo: quem são os destinatários,
-os métodos que serão chamados e seus parâmetros. Dessa forma, qualquer objeto
-que quiser realizar a tarefa apenas precisa conhecer a interface do objeto comando.
-
-## Exemplo
-Vamos considerar uma implementação de um botão de algum framework GUI, o qual tem
-um método chamado durante um clique de um botão.
+Neste exemplo, demonstraremos a implementação do padrão Command em Ruby.
 
 ```ruby
-class SlickButton
+# Receiver
+class Light
+  def on
+    puts "Luz ligada"
+  end
 
-  # Lots of button drawing and management
-  # code omitted...
-
-  def on_button_push
-    # Do something when the button is pushed
+  def off
+    puts "Luz desligada"
   end
 end
-```
 
-Nós podemos estender a classe botão que sobrescreve o método `on_button_push`
-para realizar certas ações sempre que o usuário clique no botão. Por exemplo,
-se o objetivo do botão é salvar um documento, poderíamos fazer algo assim:  
-
-```ruby
-class SaveButton < SlickButton
-  def on_button_push
-    # Save the current document...
-  end
-end
-```
-
-No entanto, uma GUI complexa poderia ter centenas de botões, o que significa que
-nós poderíamos acabar tendo centenas de subclasses para nossos botões. Existe
-uma maneira mais fácil. Nós podemos refatorar o código que executa a ação em seu
- próprio objeto, o qual implementa uma interface simples. Então, nós podemos
-refatorar a implementação de nosso botão para receber um objeto comando como
-parâmetro e chama-lo quando clicado.
-
-```ruby
-class SaveCommand
+# Command interface
+class Command
   def execute
-    # Save the current document...
+    raise NotImplementedError, "Esse método deve ser implementado pelas subclasses."
   end
 end
 
-class SlickButton
-  attr_accessor :command
-
-  def initialize(command)
-    @command = command
-  end
-
-  def on_button_push
-    @command.execute if @command
-  end
-end
-
-save_button = SlickButton.new(SaveCommand.new)
-```
-
-O padrão *Command* é muito útil se nós precisarmos implementar uma funcionalidade
- do tipo **desfazer/voltar**. Tudo que precisamos fazer é implementar o método
- `unexecute` em nosso objeto comando. Por exemplo, assim é como nós iríamos
- implementar a criação de um arquivo:
-
-```ruby
-class CreateFile < Command
-  def initialize(path, contents)
-    super "Create file: #{path}"
-    @path = path
-    @contents = contents
+# Concrete Command
+class LightOnCommand < Command
+  def initialize(light)
+    @light = light
   end
 
   def execute
-    f = File.open(@path, "w")
-    f.write(@contents)
-    f.close
-  end
-
-  def unexecute
-    File.delete(@path)
+    @light.on
   end
 end
-```
-Outra situação útil onde o padrão **Command** é muito conveniente é em programas
-de instalação. Ao combinar ele com o padrão **Composite** (Composto), nós podemos
-guardar uma lista de tarefas que precisem ser realizadas.
 
-```ruby
-class CompositeCommand < Command
+# Concrete Command
+class LightOffCommand < Command
+  def initialize(light)
+    @light = light
+  end
+
+  def execute
+    @light.off
+  end
+end
+
+# Invoker
+class RemoteControl
   def initialize
     @commands = []
   end
 
-  def add_command(cmd)
-    @commands << cmd
+  def add_command(command)
+    @commands << command
   end
 
-  def execute
-    @commands.each {|cmd| cmd.execute}
+  def execute_commands
+    @commands.each(&:execute)
   end
 end
 
-cmds = CompositeCommand.new
-cmds.add_command(CreateFile.new('file1.txt', "hello world\n"))
-cmds.add_command(CopyFile.new('file1.txt', 'file2.txt'))
-cmds.add_command(DeleteFile.new('file1.txt'))
+# Client
+light = Light.new
+
+light_on_command = LightOnCommand.new(light)
+light_off_command = LightOffCommand.new(light)
+
+remote_control = RemoteControl.new
+remote_control.add_command(light_on_command)
+remote_control.add_command(light_off_command)
+
+remote_control.execute_commands
 ```
+
+Neste exemplo, temos uma classe `Light` que atua como o "Receiver", que contém os métodos `on` e `off` para ligar e desligar uma luz.
+
+A classe abstrata `Command` define a interface para todos os comandos, com um método `execute` que deve ser implementado pelas subclasses concretas. Neste caso, temos duas subclasses concretas: `LightOnCommand` e `LightOffCommand`. Cada uma delas recebe uma instância de `Light` no construtor e implementa o método `execute` para chamar os métodos `on` e `off` do `Light`, respectivamente.
+
+A classe `RemoteControl` atua como o "Invoker" e mantém uma lista de comandos. Ela possui os métodos `add_command` para adicionar um comando à lista e `execute_commands` para percorrer a lista e executar os comandos.
+
+No cliente, criamos uma instância de `Light`, em seguida, instâncias de `LightOnCommand` e `LightOffCommand` são criadas, passando a instância de `Light` correspondente no construtor. Esses comandos são adicionados ao controle remoto (`RemoteControl`) usando o método `add_command`. Por fim, chamamos o método `execute_commands` no controle remoto para executar todos os comandos adicionados.
+
+Ao executar o exemplo, veremos a saída "Luz ligada" e "Luz desligada".
+
+O padrão Command permite encapsular uma solicitação como um objeto, permitindo parametrizar clientes com diferentes solicitações, fazer fila ou registrar solicitações em log e oferecer suporte a operações reversíveis.

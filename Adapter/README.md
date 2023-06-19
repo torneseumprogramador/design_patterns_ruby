@@ -1,68 +1,42 @@
-# O Padrão *Adapter*
+## Adapter para Importação de Arquivos CSV em Ruby
 
-## Problema
-Nós queremos conversar que um objeto converse com outro objeto, mas as interfaces
-deles não combinam.
+O padrão Adapter é aplicado neste exemplo para permitir a integração de uma classe existente, `LegacyCSVImporter`, com uma nova interface, `CSVImporter`, em um sistema que realiza a leitura e importação de arquivos CSV em Ruby.
 
-## Solução
-Nós simplesmente envolvemos o **adaptado** com a nossa nova classe **adaptadora**.
-Essa classe implementa uma interface que o invocador compreenda, embora todo o
-trabalho seja realizado pelo objeto adaptado.
+A classe `LegacyCSVImporter` representa a classe existente com uma interface incompatível, contendo a lógica para importar o arquivo CSV. A classe `CSVImporter` define a nova interface esperada pelo cliente, com o método `import(file_path)`.
 
-## Exemplo
-Vamos pensar em uma classe que receba dois arquivos (um leitor e um escritor) e
-criptografe um arquivo.
+O adaptador, `CSVImporterAdapter`, herda da classe `CSVImporter` e atua como uma camada intermediária. Ele se comunica com a classe `LegacyCSVImporter`, utilizando a lógica de importação existente, para realizar a importação do arquivo CSV.
+
+Ao utilizar o padrão Adapter, é possível utilizar a nova interface `CSVImporter` para importar arquivos CSV, mesmo que a classe `LegacyCSVImporter` possua uma interface incompatível. O cliente cria uma instância do `CSVImporterAdapter` e chama o método `import` para importar o arquivo CSV.
 
 ```ruby
-class Encrypter
-  def initialize(key)
-    @key = key
-  end
-
-  def encrypt(reader, writer)
-    key_index = 0
-    while not reader.eof?
-      clear_char = reader.getc
-      encrypted_char = clear_char ^ @key[key_index]
-      writer.putc(encrypted_char)
-      key_index = (key_index + 1) % @key.size
-    end
+# Classe existente com interface incompatível
+class LegacyCSVImporter
+  def import(csv_file)
+    # Lógica para importar o arquivo CSV
+    puts "Importando arquivo CSV: #{csv_file}"
   end
 end
-```
-Mas o que acontece se a informação que queremos deixar segura estiver em uma
-string, ao invés de em um arquivo? Nós precisamos de um objeto que se parece
-com um arquivo, ou seja, suporte a mesma interface que um objeto de `IO` do
-Ruby. Podemos criar uma classe adaptadora `StringIOAdapter` para alcançar isso:
 
-```ruby
-class StringIOAdapter
-  def initialize(string)
-    @string = string
-    @position = 0
-  end
-
-  def getc
-    if @position >= @string.length
-      raise EOFError
-    end
-    ch = @string[@position]
-    @position += 1
-    return ch
-  end
-
-  def eof?
-    return @position >= @string.length
+# Nova interface esperada pelo cliente
+class CSVImporter
+  def import(file_path)
+    raise NotImplementedError, "Esse método deve ser implementado pelas subclasses."
   end
 end
+
+# Implementação do Adapter
+class CSVImporterAdapter < CSVImporter
+  def import(file_path)
+    legacy_importer = LegacyCSVImporter.new
+    legacy_importer.import(file_path)
+  end
+end
+
+# Cliente que usa a nova interface
+importer = CSVImporterAdapter.new
+importer.import("dados.csv")
 ```
 
-Agora podemos usar uma `String` como se fosse um arquivo, apenas uma pequena
-parte da interface `IO` é implementada, basicamente o que precisamos.
+Este exemplo demonstra o conceito do padrão Adapter, mas em uma aplicação real, você precisaria adicionar lógica adicional, como a leitura do arquivo CSV e o processamento dos dados.
 
-```ruby
-encrypter = Encrypter.new('XYZZY')
-reader= StringIOAdapter.new('We attack at dawn')
-writer=File.open('out.txt', 'w')
-encrypter.encrypt(reader, writer)
-```
+Certifique-se de adaptar o exemplo para a linguagem de programação que você está utilizando.
