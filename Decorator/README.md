@@ -84,8 +84,8 @@ class NumberingWriter < WriterDecorator
     @line_number = 1
   end
 
-  def write_line(line)
-    @real_writer.write_line("#{@line_number}: #{line}")
+  def write_line()
+    @real_writer.write_line("#{@line_number}: #{@line_number}")
     @line_number += 1
   end
 end
@@ -103,7 +103,5 @@ class TimeStampingWriter < WriterDecorator
   end
 end
 
-writer = CheckSummingWriter.new(TimeStampingWriter.new(
-            NumberingWriter.new(SimpleWriter.new('final.txt'))))
-writer.write_line('Hello out there')
+TimeStampingWriter.new(SimpleWriter.new('final.txt')).write_line(1)
 ```
