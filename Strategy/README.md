@@ -6,6 +6,43 @@ anteriormente usando o padrão de Método *Template*. Contudo nós queremos
 evitar suas desvantagens, introduzidas pelo fato dele ser construído ao redor de
 herança.
 
+
+```ruby
+# classe comn problema
+class Report
+  attr_reader :title, :text, :tipo
+
+  def initialize(tipo)
+    @title = 'Monthly Report'
+    @text = ['Things are going', 'really, really well.']
+    @tipo = tipo
+  end
+
+  def output_report
+
+    if @tipo == "html"
+      puts('<html>')
+      puts(' <head>')
+      puts("<title>#{context.title}</title>")
+      puts(' </head>')
+      puts(' <body>')
+      context.text.each do |line|
+        puts("<p>#{line}</p>")
+      end
+      puts(' </body>')
+      puts('</html>')
+    else
+      puts("***** #{context.title} *****")
+      context.text.each do |line|
+        puts(line)
+      end
+    end
+    
+  end
+end
+```
+
+
 ## Solução
 Para evitar os problemas introduzidos pela herança, nós devemos usar delegação.
 Ao invés de criar subclasses (como no padrão de Método *Template*), nós
