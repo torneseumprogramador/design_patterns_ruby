@@ -14,15 +14,15 @@ class ProductQuery
   end
 
   def search_by_name(name)
-    where("name ILIKE ?", "%#{name}%")
+    @produto.where("name ILIKE ?", "%#{name}%")
   end
 
   def price_greater_than(price)
-    where("price > ?", price)
+    @produto.where("price > ?", price)
   end
 
   def category(category)
-    where(category: category)
+    @produto.where(category: category)
   end
 end
 
