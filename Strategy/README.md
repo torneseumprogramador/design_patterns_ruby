@@ -83,7 +83,14 @@ A implementação de cada formato teria sua própria classe, o que nos permite
 alcançar um separação melhor de responsabilidades.
 
 ```ruby
-class HTMLFormatter
+
+class InterfaceFormatter
+  def output_report(context)
+    raise "Falta implementar"
+  end
+end
+
+class HTMLFormatter < InterfaceFormatter
   def output_report(context)
     puts('<html>')
     puts(' <head>')
@@ -98,7 +105,7 @@ class HTMLFormatter
   end
 end
 
-class PlainTextFormatter
+class PlainTextFormatter < InterfaceFormatter
   def output_report(context)
     puts("***** #{context.title} *****")
     context.text.each do |line|
@@ -106,14 +113,18 @@ class PlainTextFormatter
     end
   end
 end
+
 ```
 Para utilização, nós precisamos apenas fornecer um objeto formatador (estratégia)
 ao objeto da classe `Report` (contexto). *Report* significa relatório.
 
 ```ruby
-report = Report.new(HTMLFormatter.new)
-report.output_report
+Report.new(HTMLFormatter.new).output_report
+Report.new(PlainTextFormatter.new).output_report
 
-report.formatter = PlainTextFormatter.new
-report.output_report
+# implementar o driver XmlFormatter
+Report.new(XmlFormatter.new).output_report
+
+# implementar o driver CsvFormatter
+Report.new(CsvFormatter.new).output_report
 ```
