@@ -131,3 +131,70 @@ class Employee
   end
 end
 ```
+
+
+# Outro exemplo:
+
+# Padrão Observer - Exemplo de Envio de E-mails
+
+Neste exemplo, vamos utilizar o padrão Observer para implementar o envio de e-mails em um sistema.
+
+## Observers
+
+### `EmailNotifier`
+
+O observador `EmailNotifier` é responsável por enviar um e-mail de confirmação para o cliente.
+
+#### Método `update(order)`
+
+- `order` (Order): A instância do pedido que foi atualizada.
+
+### `ShippingNotifier`
+
+O observador `ShippingNotifier` é responsável por enviar um e-mail de notificação de envio para o cliente.
+
+#### Método `update(order)`
+
+- `order` (Order): A instância do pedido que foi atualizada.
+
+## Subject (Observable)
+
+### `Order`
+
+A classe `Order` representa um pedido e atua como o subject (observable). Ela possui um atributo `customer_email` para armazenar o e-mail do cliente e um atributo `status` para representar o status do pedido.
+
+#### Atributos
+
+- `customer_email`: O e-mail do cliente.
+- `status`: O status do pedido.
+
+#### Métodos
+
+- `attach(observer)`: Anexa um observador à lista de observadores do pedido.
+- `detach(observer)`: Remove um observador da lista de observadores do pedido.
+- `notify_observers()`: Notifica todos os observadores registrados quando o status do pedido é atualizado.
+- `status=(new_status)`: Atualiza o status do pedido e notifica os observadores.
+
+## Exemplo de Uso
+
+Aqui está um exemplo de uso do padrão Observer para o envio de e-mails:
+
+```ruby
+order = Order.new("cliente@example.com")
+
+email_notifier = EmailNotifier.new
+shipping_notifier = ShippingNotifier.new
+
+order.attach(email_notifier)
+order.attach(shipping_notifier)
+
+order.status = "confirmado"
+
+order.detach(email_notifier)
+
+order.status = "enviado"
+```
+
+Neste exemplo, criamos uma instância da classe `Order` com um e-mail de cliente. Em seguida, anexamos os observadores `EmailNotifier` e `ShippingNotifier` ao pedido. Ao atualizar o status do pedido para "confirmado" e "enviado", os observadores são notificados e realizam suas respectivas ações de envio de e-mails.
+
+Essa implementação do padrão Observer permite a flexibilidade de adicionar, remover e notificar observadores de forma dinâmica, garantindo a separação de responsabilidades entre o subject e os observadores.
