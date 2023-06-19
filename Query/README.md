@@ -5,16 +5,23 @@ A classe `Product` representa um modelo de produto e utiliza o padrão Query par
 ## Implementação
 
 ```ruby
-class ProductQuery < ApplicationRecord
-  def self.search_by_name(name)
+class Product < ApplicationRecord
+end
+
+class ProductQuery
+  def initialize(produto)
+    @produto = produto
+  end
+
+  def search_by_name(name)
     where("name ILIKE ?", "%#{name}%")
   end
 
-  def self.price_greater_than(price)
+  def price_greater_than(price)
     where("price > ?", price)
   end
 
-  def self.category(category)
+  def category(category)
     where(category: category)
   end
 end
@@ -65,19 +72,19 @@ Aqui está um exemplo de uso dos métodos de consulta da classe `Product`:
 
 ```ruby
 # Consulta por produtos cujo nome contenha "apple"
-products = ProductQuery.search_by_name("apple")
+products = ProductQuery.new(Produto).search_by_name("apple")
 products.each do |product|
   puts "#{product.name} - R$ #{product.price}"
 end
 
 # Consulta por produtos com preço maior que 50
-products = ProductQuery.price_greater_than(50)
+products = ProductQuery.new(Produto).price_greater_than(50)
 products.each do |product|
   puts "#{product.name} - R$ #{product.price}"
 end
 
 # Consulta por produtos da categoria "eletrônicos"
-products = ProductQuery.category("eletrônicos")
+products = ProductQuery.new(Produto).category("eletrônicos")
 products.each do |product|
   puts "#{product.name} - R$ #{product.price}"
 end
