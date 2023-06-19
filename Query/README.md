@@ -2,6 +2,25 @@
 
 A classe `Product` representa um modelo de produto e utiliza o padrão Query para realizar consultas utilizando o Active Record no Rails.
 
+## Implementação
+
+```ruby
+class Product < ApplicationRecord
+  def self.search_by_name(name)
+    where("name ILIKE ?", "%#{name}%")
+  end
+
+  def self.price_greater_than(price)
+    where("price > ?", price)
+  end
+
+  def self.category(category)
+    where(category: category)
+  end
+end
+
+```
+
 ## Métodos
 
 ### `search_by_name(name)`
