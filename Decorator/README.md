@@ -103,7 +103,5 @@ class TimeStampingWriter < WriterDecorator
   end
 end
 
-writer = CheckSummingWriter.new(TimeStampingWriter.new(
-            NumberingWriter.new(SimpleWriter.new('final.txt'))))
-writer.write_line('Hello out there')
+TimeStampingWriter.new(SimpleWriter.new('final.txt')).write_line(1)
 ```
