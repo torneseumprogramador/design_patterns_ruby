@@ -1,120 +1,88 @@
-# um vídeo legal com exemplo xe objeto de valor
-- https://youtu.be/7ItqiuM_LXU
+# Padrão Object Value - Exemplo com Cliente e CPF
 
+O padrão Object Value é um padrão de projeto que permite encapsular a lógica e validação de um determinado valor em um objeto específico. Nesse exemplo, vamos utilizar o padrão Object Value para as classes `Cliente` e `CPF`, garantindo que o CPF de um cliente seja uma entidade válida.
 
-# Values
+## Classe `Cliente`
 
-[![Gem Version](https://img.shields.io/gem/v/values.svg)](https://rubygems.org/gems/values/)
-[![Gem Downloads](https://img.shields.io/gem/dt/values.svg)](https://rubygems.org/gems/values/)
-[![CI Build Status](https://img.shields.io/travis/tcrayford/Values.svg)](https://travis-ci.org/tcrayford/Values)
-[![Code Coverage](https://img.shields.io/codecov/c/github/tcrayford/Values.svg)](https://codecov.io/github/tcrayford/Values)
-[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](http://rubydoc.info/github/tcrayford/Values/master/frames)
+A classe `Cliente` representa um cliente com atributos como `nome` e `cpf`. O construtor da classe recebe um `nome` e um `cpf`. O atributo `cpf` é definido como uma instância da classe `CPF`, assegurando que o CPF seja uma entidade válida.
 
-## Summary
+### Atributos
 
-Values is a tiny library for creating value objects in ruby.
+- `nome`: O nome do cliente.
+- `cpf`: O CPF do cliente.
 
-Classes created using [Value](lib/values.rb) mostly look like classes created using
-[Struct](http://ruby-doc.org/core-2.2.1/Struct.html) or
-[OpenStruct](http://ruby-doc.org/stdlib-2.2.1/libdoc/ostruct/rdoc/OpenStruct.html),
-but fix two problems with those:
+## Classe `CPF`
 
-## Problems with [Struct](http://ruby-doc.org/core-2.2.1/Struct.html) and [OpenStruct](http://ruby-doc.org/stdlib-2.2.1/libdoc/ostruct/rdoc/OpenStruct.html)
+A classe `CPF` é responsável pela validação e cálculo dos dígitos verificadores do CPF. Ela recebe o número do CPF como parâmetro em seu construtor e remove caracteres não numéricos. Em seguida, é feita a validação do CPF, levantando uma exceção caso seja inválido.
 
-Struct and OpenStruct constructors can take fewer than the default number of arguments and set other fields as nil:
+### Atributos
+
+- `numero`: O número do CPF.
+
+### Métodos
+
+- `validar_cpf()`: Realiza a validação do CPF, levantando uma exceção se o CPF for inválido.
+- `cpf_valido?()`: Verifica se os dígitos verificadores do CPF estão corretos.
+- `calcular_digito_verificador(parcial)`: Calcula o dígito verificador do CPF com base em uma parte do número.
+
+Esse exemplo demonstra como utilizar o padrão Object Value para encapsular a validação e cálculo dos dígitos verificadores do CPF em uma classe separada, proporcionando uma forma mais segura e coesa de lidar com essa informação.
+
+Ao utilizar as classes `Cliente` e `CPF`, é possível garantir que o CPF de um cliente seja uma entidade válida e realizar operações com mais segurança em seu sistema.
+
+Espero que essa explicação tenha sido útil para entender o padrão Object Value aplicado nas classes `Cliente` e `CPF`!
+
 
 ```ruby
-Point = Struct.new(:x, :y)
-Point.new(1)
-# => #<struct Point x=1, y=nil>
-```
+class Cliente
+  attr_accessor :nome, :cpf
 
-```ruby
-p = OpenStruct.new(x: 1)
-# => #<OpenStruct x=1>
-p.y
-# => nil
-```
+  def initialize(nome, cpf)
+    @nome = nome
+    self.cpf = CPF.new(cpf)
+  end
 
-Struct and OpenStruct objects are mutable:
-
-```ruby
-p = Point.new(1, 2)
-p.x = 2
-p.x
-# => 2
-```
-
-```ruby
-p = OpenStruct.new(x: 1, y: 2)
-p.x = 2
-p.x
-# => 2
-```
-
-## Values is Better
-
-Values fixes both of the above problems.
-
-Constructors require expected arguments:
-
-```ruby
-Point = Value.new(:x, :y)
-Point.new(1)
-# => ArgumentError: wrong number of arguments, 1 for 2
-# from /Users/tcrayford/Projects/ruby/values/lib/values.rb:7:in `block (2 levels) in new
-# from (irb):5:in new
-# from (irb):5
-# from /usr/local/bin/irb:12:in `<main>
-```
-
-Instances are immutable:
-
-```ruby
-p = Point.new(1, 2)
-p.x = 1
-# => NoMethodError: undefined method x= for #<Point:0x00000100943788 @x=0, @y=1>
-# from (irb):6
-# from /usr/local/bin/irb:12:in <main>
-```
-
-## Features
-
-Values also provides an alternative constructor which takes a hash:
-
-```ruby
-p = Point.with(x: 3, y: 4)
-p.x
-# => 3
-```
-
-Values can copy and replace fields using a hash:
-
-```ruby
-p = Point.with(x: 1, y: -1)
-q = p.with(y: 2)
-# => #<Point x=1, y=2>
-```
-
-Value classes can be converted to a hash, like OpenStruct:
-
-```ruby
-Point.with(x: 1, y: -1).to_h
-# => {:x=>1, :y=>-1}
-```
-
-Values also supports customization of value classes inheriting from `Value.new`:
-
-```ruby
-class Point < Value.new(:x, :y)
-  def to_s
-    "<Point at (#{x}, #{y})>"
+  def cpf=(cpf)
+    if cpf.is_a?(CPF)
+      @cpf = cpf
+    else
+      raise ArgumentError, "O CPF precisa ser uma instância da classe CPF"
+    end
   end
 end
 
-p = Point.new(1, 2)
-p.to_s
-# => "<Point at (1, 2)>"
-```
+class CPF
+  attr_reader :numero
 
-Values does NOT have all the features of Struct or OpenStruct (nor is it meant to).
+  def initialize(numero)
+    @numero = numero.to_s.gsub(/\D/, '') # Remove caracteres não numéricos
+    validar_cpf
+  end
+
+  def validar_cpf
+    raise ArgumentError, "CPF inválido" unless cpf_valido?
+  end
+
+  def cpf_valido?
+    return false if numero.length != 11
+
+    digitos = numero.chars.map(&:to_i)
+    dv1 = calcular_digito_verificador(digitos[0..8])
+    dv2 = calcular_digito_verificador(digitos[0..8].append(dv1))
+
+    digitos[9] == dv1 && digitos[10] == dv2
+  end
+
+  def calcular_digito_verificador(parcial)
+    soma = 0
+    multiplicador = parcial.length + 1
+
+    parcial.each do |digito|
+      soma += digito * multiplicador
+      multiplicador -= 1
+    end
+
+    resto = soma % 11
+    resto < 2 ? 0 : 11 - resto
+  end
+end
+```
