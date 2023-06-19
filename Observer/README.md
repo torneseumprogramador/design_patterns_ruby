@@ -175,6 +175,68 @@ A classe `Order` representa um pedido e atua como o subject (observable). Ela po
 - `notify_observers()`: Notifica todos os observadores registrados quando o status do pedido é atualizado.
 - `status=(new_status)`: Atualiza o status do pedido e notifica os observadores.
 
+## Implementação
+```ruby
+# Observers
+class EmailNotifier
+  def update(order)
+    puts "Enviando e-mail de confirmação para o cliente: #{order.customer_email}"
+    # Lógica para enviar o e-mail de confirmação ao cliente
+  end
+end
+
+class ShippingNotifier
+  def update(order)
+    puts "Enviando e-mail de notificação de envio para o cliente: #{order.customer_email}"
+    # Lógica para enviar o e-mail de notificação de envio ao cliente
+  end
+end
+
+# Subject (Observable)
+class Order
+  attr_accessor :customer_email, :status
+  attr_reader :observers
+
+  def initialize(customer_email)
+    @customer_email = customer_email
+    @observers = []
+  end
+
+  def attach(observer)
+    observers << observer
+  end
+
+  def detach(observer)
+    observers.delete(observer)
+  end
+
+  def notify_observers
+    observers.each { |observer| observer.update(self) }
+  end
+
+  def status=(new_status)
+    @status = new_status
+    notify_observers
+  end
+end
+
+# Exemplo de uso
+order = Order.new("cliente@example.com")
+
+email_notifier = EmailNotifier.new
+shipping_notifier = ShippingNotifier.new
+
+order.attach(email_notifier)
+order.attach(shipping_notifier)
+
+order.status = "confirmado"
+
+order.detach(email_notifier)
+
+order.status = "enviado"
+
+```
+
 ## Exemplo de Uso
 
 Aqui está um exemplo de uso do padrão Observer para o envio de e-mails:
